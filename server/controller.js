@@ -1,3 +1,17 @@
+let goals = [
+    {
+        goalId: 1,
+        goal: "Finish coding assessment",
+    },
+    {
+        goalId: 2,
+        goal: "score 30 points in a basketball game",
+    },
+    
+];
+
+let globalId = 3;
+
 module.exports = {
 
     getCompliment: (req, res) => {
@@ -8,17 +22,36 @@ module.exports = {
         let randomCompliment = compliments[randomIndex];
       
         res.status(200).send(randomCompliment);
-    }
-
-}
-
-module.exports = {
+    },
     getFortune: (req, res) => {
-        const fortune = ["A faithful friend is a strong defense!", "Believe it can be done!", "Success is a journey not a destination!"]
+        const fortunes = [
+            "A good time to finish up old tasks",
+            "A lifetime frend shall soon be made",
+            "A golden egg of opportunity falls into your lap this month",
+        ];
 
-        let randomIndex = Math.floor(Math.random() * fortune.length);
+        let  randomIndex = Math.floor(Math.random() * fortunes.length);
         let randomFortune = fortunes[randomIndex];
-
         res.status(200).send(randomFortune);
-    }
-}
+    },
+    getGoals:(req,res) => {
+        res.status(200).send(goals);
+    },
+    addGoal: (req,res) => {
+        let { goal } = req.body;
+        let newGoal = {
+            goalId:globalId,
+            goal,
+        };
+        goals.push(newGoal);
+        globalId++;
+        res.status(200).send(goals);
+    },
+    deleteGoal: (req,res) => {
+        const { id } = req.params;
+        const index = goals.findIndex(goal => goal.goalId === +id)
+        goals.splice(index,1)
+        res.status(200).send(goals)
+    },
+
+};
