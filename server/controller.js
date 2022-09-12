@@ -1,16 +1,8 @@
-let goals = [
-    {
-        goalId: 1,
-        goal: "Finish coding assessment",
-    },
-    {
-        goalId: 2,
-        goal: "score 30 points in a basketball game",
-    },
-    
-];
-
-let globalId = 3;
+const toDoObject = [
+    { id: 0, item: "Clean the house"},
+    { id: 1, item: "Go to the gym"},
+]
+let baseNum = 2
 
 module.exports = {
 
@@ -24,34 +16,44 @@ module.exports = {
         res.status(200).send(randomCompliment);
     },
     getFortune: (req, res) => {
-        const fortunes = [
-            "A good time to finish up old tasks",
-            "A lifetime frend shall soon be made",
-            "A golden egg of opportunity falls into your lap this month",
-        ];
-
-        let  randomIndex = Math.floor(Math.random() * fortunes.length);
-        let randomFortune = fortunes[randomIndex];
+        const fortune = ["A fresh start will put you on your way.", "It is worth reviewing some old lessons.", "It is not the amount of time you devote, but what you devote to the time that counts.", "Meditation with an old enemy is advised."];
+      
+        // choose random fortune
+        let randomIndex = Math.floor(Math.random() * fortune.length);
+        let randomFortune = fortune[randomIndex];
+      
         res.status(200).send(randomFortune);
     },
-    getGoals:(req,res) => {
-        res.status(200).send(goals);
-    },
-    addGoal: (req,res) => {
-        let { goal } = req.body;
-        let newGoal = {
-            goalId:globalId,
-            goal,
-        };
-        goals.push(newGoal);
-        globalId++;
-        res.status(200).send(goals);
-    },
-    deleteGoal: (req,res) => {
-        const { id } = req.params;
-        const index = goals.findIndex(goal => goal.goalId === +id)
-        goals.splice(index,1)
-        res.status(200).send(goals)
-    },
+    postToDo: (req, res) => {
+   
+        let { item } = req.body
 
-};
+        let newToDo = {
+            id: baseNum,
+            item,
+        }
+        console.log(newToDo)
+
+        toDoObject.push(newToDo)
+        baseNum++
+
+        res.status(200).send(JSON.stringify(toDoObject.map(item => item.item)));
+    },
+    getToDoList: (req, res) => {
+
+        res.status(200).send(JSON.stringify(toDoObject.map(item => item.item)));
+    },
+    deleteToDoListItem: (request, response) => {
+        // console.log(request.params)
+        toDoObject.splice(request.params.id, 1)
+        response.status(200).send(JSON.stringify(toDoObject.map(item => item.item)))
+    },
+    updateListItem: (request, response) => {
+        // console.log(request.body)
+        const itemToUpdate = toDoObject.find((item) => item.id === parseInt(request.body['id']))
+        // console.log(itemToUpdate);
+        itemToUpdate.item = request.body.item
+        
+        response.status(200).send(JSON.stringify(toDoObject.map(item => item.item)))
+    }
+}

@@ -1,73 +1,105 @@
+// GET
+
 const complimentBtn = document.getElementById("complimentButton")
-const fortuneBtn = document.getElementById("fortuneBtn")
-const goalBtn = document.getElementById("get-goals-btn")
-
-const BaseURL = 'http://localhost:4000'
-
 const getCompliment = () => {
-    axios.get(`${BaseURL}/api/compliment`)
+    axios.get("http://localhost:4000/api/compliment/")
         .then(res => {
             const data = res.data;
             alert(data);
     });
 };
-
-const getFortune = () => {
-    axios.get(`${BaseURL}/api/fortune`)
-    .then(res => {
-        alert(res.data)
-    })
-    .catch(err => console.log(err))
-}
-
-const deleteBtnFunc = (evt) => {
-    console.log(evt.target.id)
-    axios.delete(`${BaseURL}/api/goals/${evt.target.id}`)
-    .then(res => displayList(res.data))
-    .catch(err => console.log(err))
-}
-
-const displayList = () => {
-        parentEl.remove()
-        parentEl.textContent = 'My Goals'
-        let goalList = document.createElement('ul')
-        parentEl.appendChild(goalList)
-        arr.map(element => {
-            let goalEl = document.createElement('li')
-            let deleteBtn = document.createElement('button')
-            deleteBtn.textContent = "delete me"
-            deleteBtn.setAttribute('id', element.goalId)
-            goalEl.textContent = element.goal
-            goalEl.appendChild(deleteBtn)
-            goalList.appendChild(goalEl)
-            deleteBtn.addEventListener('click', deleteBtnFunc)
-        })
-        document.body.appendChild(parentEl)
-}
-
-const getGoals = () => {
-    axios.get(`${BaseURL}/api/goals`)
-    .then(res => {
-        console.log(res.data)
-        displayList(res.data)
-    })
-    .catch(err => console.log(err))
-}
-
-const addGoal = () => {
-    let body = {
-        goal:goalInput.value
-    }
-    axios.post(`${BaseURL}/api/goals`, body)
-    .then(res => {
-        console.log(res.data)
-        displayList(res.data)
-        goalInput.value = ''
-    })
-    .catch(err => console.log(err))
-}
-
 complimentBtn.addEventListener('click', getCompliment)
+
+// GET
+
+const fortuneBtn = document.getElementById("fortuneButton")
+const getFortune = () => {
+    axios.get("http://localhost:4000/api/fortune/")
+        .then(res => {
+            // alert("hi")
+            const data = res.data;
+            alert(data);
+    });
+};
 fortuneBtn.addEventListener('click', getFortune)
-goalBtn.addEventListener('click', getGoals)
-goalSubmit.addEventListener('click', addGoal)
+
+// GET
+
+const toDoListBtn = document.getElementById("toDoListButton")
+const getToDoList = () => {
+    axios.get("http://localhost:4000/api/toDoList/")
+        .then(res => {
+
+            const data = res.data;
+            alert(data);
+    });
+};
+toDoListBtn.addEventListener('click', getToDoList)
+
+// POST
+
+const toDoBtn = document.getElementById("toDoBtn")
+let itemMessage = document.querySelector("#postItem")
+
+function submitHandler(e) {
+    let bodyObj = {
+        item: itemMessage.value
+    }
+
+    postToDo(bodyObj)
+    console.log(bodyObj)
+    itemMessage.value = ''
+}
+
+const postToDo = (body) => {
+    axios.post("http://localhost:4000/api/toDo/", body)
+        .then(response => {
+            // console.log(body)
+            console.log(response.data)
+
+            const data = response.data;
+            alert(data);
+    });
+};
+toDoBtn.addEventListener('click', submitHandler)
+
+// PUT
+
+const updateBtn = document.getElementById("updateListButton")
+const updateNum = document.getElementById("updateNum")
+const updateContent = document.getElementById("updateContent")
+
+const updateListItem = (body) => {
+    axios.put("http://localhost:4000/api/toDoList/:id", body)
+        .then(res => {
+            console.log("success")
+            const data = res.data;
+            alert(data);
+    });
+};
+updateBtn.addEventListener('click', submitHandlerPut)
+
+function submitHandlerPut() {
+    let bodyObj = {
+        id: updateNum.value,
+        item: updateContent.value,
+    }
+    
+    updateListItem(bodyObj)
+    console.log(bodyObj)
+    updateContent.value = ''
+    updateNum.value = ''
+}
+
+// DELETE
+
+const deleteBtn = document.getElementById("delteToDoListButton")
+const deleteToDoListItem = () => {
+    axios.delete("http://localhost:4000/api/toDoList/:id")
+        .then(res => {
+            console.log("success")
+            const data = res.data;
+            alert(data);
+    });
+};
+deleteBtn.addEventListener('click', deleteToDoListItem)
